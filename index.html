@@ -9,7 +9,7 @@
     <link href="site.css" type="text/css" />
 </head>
 
-<body onload="init();">
+<body onload="">
     <div class="container">
         <div id="sketch">
             <canvas id="draw" width="1000" height="1000" style="border:2px solid black">
@@ -20,111 +20,115 @@
 </body>
 <script>
     var circles = [];
+    var down = false;
+    $(document).mousedown(function () {
+        down = true;
+    }).mouseup(function () {
+        down = false;
+    });
+
     Leap.loop({
 
         hand: function (hand) {
-            paint(hand.screenPosition()[0], hand.screenPosition()[1] + 400);
+            console.log(hand.screenPosition());
+            //if (down) {
+                paint(hand.screenPosition()[0], hand.screenPosition()[1] + 400);
+            //}
         }
 
     }).use('screenPosition');
 
-        var canvas = document.querySelector('#draw');
-        var ctx = canvas.getContext('2d');
+    var canvas = document.querySelector('#draw');
+    var ctx = canvas.getContext('2d');
 
-        var sketch = document.querySelector('#sketch');
-        var sketch_style = getComputedStyle(sketch);
-        canvas.width = parseInt(sketch_style.getPropertyValue('width'));
-        canvas.height = parseInt(sketch_style.getPropertyValue('height'));
+    var sketch = document.querySelector('#sketch');
+    var sketch_style = getComputedStyle(sketch);
+    canvas.width = parseInt(sketch_style.getPropertyValue('width'));
+    canvas.height = parseInt(sketch_style.getPropertyValue('height'));
 
-        var mouse = {
-            x: 0,
-            y: 0
-        };
-        var last_mouse = {
-            x: 0,
-            y: 0
-        };
+    var mouse = {
+        x: 0,
+        y: 0
+    };
+    var last_mouse = {
+        x: 0,
+        y: 0
+    };
 
-        var down = false;
-        $(document).mousedown(function () {
-            down = true;
-        }).mouseup(function () {
-            down = false;
-        });
 
-        /* Mouse Capturing Work */
-        canvas.addEventListener('mousemove', function (e) {
-            last_mouse.x = mouse.x;
-            last_mouse.y = mouse.y;
+    /* Mouse Capturing Work */
+    canvas.addEventListener('mousemove', function (e) {
+        last_mouse.x = mouse.x;
+        last_mouse.y = mouse.y;
 
-            mouse.x = e.pageX - this.offsetLeft;
-            mouse.y = e.pageY - this.offsetTop;
-            circles.push([last_mouse.x, last_mouse.y, mouse.x, mouse.y]);
-            if (down) {
-                if (circles.length > 20) {
-                    var er = circles.shift();
-                    erase(er[0], er[1], er[2], er[3]);
-                }
+        mouse.x = e.pageX - this.offsetLeft;
+        mouse.y = e.pageY - this.offsetTop;
+        circles.push([last_mouse.x, last_mouse.y, mouse.x, mouse.y]);
+        if (down) {
+            if (circles.length > 30) {
+                var er = circles.shift();
+                erase(er[0], er[1], er[2], er[3]);
             }
-        }, false);
+        }
+    }, false);
 
 
-        /* Drawing on Paint App */
+    /* Drawing on Paint App */
+    ctx.lineWidth = 5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = 'blue';
+
+    canvas.addEventListener('mousedown', function (e) {
+        canvas.addEventListener('mousemove', onPaint, false);
+    }, false);
+
+    canvas.addEventListener('mouseup', function () {
+        canvas.removeEventListener('mousemove', onPaint, false);
+    }, false);
+
+    var onPaint = function () {
+        ctx.beginPath();
         ctx.lineWidth = 5;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
         ctx.strokeStyle = 'blue';
-
-        canvas.addEventListener('mousedown', function (e) {
-            canvas.addEventListener('mousemove', onPaint, false);
-        }, false);
-
-        canvas.addEventListener('mouseup', function () {
-            canvas.removeEventListener('mousemove', onPaint, false);
-        }, false);
-
-        var onPaint = function () {
-            ctx.beginPath();
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = 'blue';
-            ctx.moveTo(last_mouse.x, last_mouse.y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.closePath();
-            ctx.stroke();
-        };
+        ctx.moveTo(last_mouse.x, last_mouse.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.closePath();
+        ctx.stroke();
+    };
 
 
-        function paint(x, y) {
-            last_mouse.x = mouse.x;
-            last_mouse.y = mouse.y;
+    function paint(x, y) {
+        last_mouse.x = mouse.x;
+        last_mouse.y = mouse.y;
 
-            mouse.x = x;
-            mouse.y = y
-            circles.push([last_mouse.x, last_mouse.y, mouse.x, mouse.y]);
-            if (down) {
-                if (circles.length > 20) {
-                    var er = circles.shift();
-                    erase(er[0], er[1], er[2], er[3]);
-                }
-            }
-            ctx.beginPath();
-            ctx.lineWidth = 5;
-            ctx.strokeStyle = 'blue';
-            ctx.moveTo(last_mouse.x, last_mouse.y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.closePath();
-            ctx.stroke();
+        mouse.x = x;
+        mouse.y = y
+        circles.push([last_mouse.x, last_mouse.y, mouse.x, mouse.y]);
+        //if (down) {
+        if (circles.length > 30) {
+            var er = circles.shift();
+            erase(er[0], er[1], er[2], er[3]);
         }
+        //}
+        ctx.beginPath();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'blue';
+        ctx.moveTo(last_mouse.x, last_mouse.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.closePath();
+        ctx.stroke();
+    }
 
-        function erase(_x, _y, x, y) {
-            ctx.beginPath();
-            ctx.lineWidth = 10;
-            ctx.strokeStyle = 'white';
-            ctx.moveTo(_x, _y);
-            ctx.lineTo(x, y);
-            ctx.closePath();
-            ctx.stroke();
-        }
+    function erase(_x, _y, x, y) {
+        ctx.beginPath();
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = 'white';
+        ctx.moveTo(_x, _y);
+        ctx.lineTo(x, y);
+        ctx.closePath();
+        ctx.stroke();
+    }
 </script>
 
 </html>
