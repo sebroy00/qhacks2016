@@ -23,12 +23,11 @@
     Leap.loop({
 
         hand: function (hand) {
-            console.log(hand.screenPosition());
+            paint(hand.screenPosition()[0], hand.screenPosition()[1] + 400);
         }
 
     }).use('screenPosition');
 
-    (function () {
         var canvas = document.querySelector('#draw');
         var ctx = canvas.getContext('2d');
 
@@ -94,6 +93,29 @@
             ctx.stroke();
         };
 
+
+        function paint(x, y) {
+            last_mouse.x = mouse.x;
+            last_mouse.y = mouse.y;
+
+            mouse.x = x;
+            mouse.y = y
+            circles.push([last_mouse.x, last_mouse.y, mouse.x, mouse.y]);
+            if (down) {
+                if (circles.length > 20) {
+                    var er = circles.shift();
+                    erase(er[0], er[1], er[2], er[3]);
+                }
+            }
+            ctx.beginPath();
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = 'blue';
+            ctx.moveTo(last_mouse.x, last_mouse.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
         function erase(_x, _y, x, y) {
             ctx.beginPath();
             ctx.lineWidth = 10;
@@ -103,7 +125,6 @@
             ctx.closePath();
             ctx.stroke();
         }
-    }());
 </script>
 
 </html>
