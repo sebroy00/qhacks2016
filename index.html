@@ -20,19 +20,36 @@
 </body>
 <script>
     var circles = [];
+<<<<<<< HEAD
     var timeSample = []
     var count = 0;
     var origin = 5; 
     var average1 = 0;
     var average2 = 0;
     var compareCount = 0;
+=======
+    var down = false;
+    $(document).mousedown(function () {
+        down = true;
+    }).mouseup(function () {
+        down = false;
+    });
+
+    Leap.loop({
+>>>>>>> e9608bf95183bbe5704ba71cb4063f661f7a765d
 
     Leap.loop({
         Data time = new Date();
         hand: function (hand) {
             console.log(hand.screenPosition());
+<<<<<<< HEAD
             
             paint(hand.screenPosition()[0], hand.screenPosition()[1] + 400);
+=======
+            //if (down) {
+                paint(hand.screenPosition()[0], hand.screenPosition()[1] + 400);
+            //}
+>>>>>>> e9608bf95183bbe5704ba71cb4063f661f7a765d
         }
         origin = position (0,0)
 
@@ -83,6 +100,7 @@
 
     }).use('screenPosition');
 
+<<<<<<< HEAD
     function analyzeTime(average){
         count = 0;
         for (int i=0; i<4;i++){
@@ -106,6 +124,8 @@
     }, false);
     myAudio.play();
 
+=======
+>>>>>>> e9608bf95183bbe5704ba71cb4063f661f7a765d
     var canvas = document.querySelector('#draw');
     var ctx = canvas.getContext('2d');
 
