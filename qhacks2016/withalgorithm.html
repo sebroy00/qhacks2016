@@ -26,6 +26,7 @@
     var average1 = 0;
     var average2 = 0;
     var compareCount = 0;
+    var origin = position(0,0);
 
     Leap.loop({
         Data time = new Date();
@@ -34,7 +35,7 @@
             
             paint(hand.screenPosition()[0], hand.screenPosition()[1] + 400);
         }
-        origin = position (0,0)
+        
 
         if (math.abs(hand.screenPosition()[0],hand.screenPosition()[1]) <= origin && math.abs(hand.screenPosition()[0]hand.screenPosition()[1]) <=origin && count <= 4){
             timeSample.push(time*100);//convert from mili to seconds
@@ -99,7 +100,7 @@
         y: 0
     };
 
-    myAudio = new Audio('someSound.ogg'); 
+    myAudio = new Audio('someSound.mp3'); 
     myAudio.addEventListener('ended', function() {
     this.currentTime = 0;
     this.play();
