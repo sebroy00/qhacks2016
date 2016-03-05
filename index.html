@@ -6,18 +6,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="leap-0.6.4.js"></script>
     <script src="leap-screenPosition-plugin.js"></script>
-    <link href="site.css" type="text/css" />
+    <link rel="stylesheet" href="site.css" type="text/css" />
 </head>
 
 <body onload="">
     <div class="container">
         <div id="sketch">
-            <canvas id="draw" width="1000" height="1000" style="border:2px solid black">
-
+            <canvas id="draw" width="1500" height="720" style="border:2px solid black;">
             </canvas>
         </div>
     </div>
 </body>
+<div class="block-container">
+    <div class="block" id="left"></div>
+    <div class="block" id="center"></div>
+    <div class="block" id="right"></div>
+</div>
+<div class="block-container">
+    <div class="block" id="top"></div>
+</div>
 <script>
     var circles = [];
     var down = false;
@@ -30,14 +37,78 @@
     Leap.loop({
 
         hand: function (hand) {
-            console.log(hand.screenPosition());
+            //console.log(hand.screenPosition());
             //if (down) {
-                paint(hand.screenPosition()[0], hand.screenPosition()[1] + 400);
+            paint(hand.screenPosition()[0], (hand.screenPosition()[1] + 500));
             //}
+            areaBorder(hand.screenPosition()[0], (hand.screenPosition()[1] + 500));
         }
 
     }).use('screenPosition');
 
+    function areaBorder(x, y) {
+        var middleTop = 300;
+        var insideLeft = 555;
+        var insideCenter = 955;
+
+        /*hit ranges*/
+        var middleTopHIT = 350;
+        var insideLeftHIT = 555;
+        var insideCenterHIT = 855;
+
+        if (y > middleTop) {
+            if (x < insideLeft) {
+                hit = false
+                    //console.log(y, "left");
+                $(".block").css("border", "none");
+                $("#left").css("border", "3px solid red");
+            } else if (x < insideCenter) {
+                //console.log(y, "center");
+                if (y > middleTopHIT && x < insideCenterHIT && x > insideLeftHIT && !hit) {
+                    console.log(y, "hit");
+                    hitCount++;
+                    hit = true;
+                }
+                $(".block").css("border", "none");
+                $("#center").css("border", "3px solid orange");
+            } else {
+                hit = false
+                    //console.log(y, "right");
+                $(".block").css("border", "none");
+                $("#right").css("border", "3px solid green");
+            }
+        } else if (y < middleTop) {
+            hit = false;
+            if (x < insideCenter && x > insideLeft) {
+                //console.log(y, "top");
+                $(".block").css("border", "none");
+                $("#top").css("border", "3px solid blue");
+            }
+        }
+    }
+    var hitCount = 0;
+    var hit = false;
+
+    /* /*Test function for middle hit */
+    function middleHit(x, y) {
+        var middleTop = 300;
+        var insideLeft = 555;
+        var insideCenter = 855;
+        if (y > middleTop) {
+            if (x < insideCenter && x > insideLeft) {
+                if (!hit) {
+                    console.log(y, "hit");
+                    hitCount++;
+                    hit = true;
+                }
+            } else {
+                hit = false;
+            }
+        } else {
+            hit = false;
+        }
+    }
+    */
     var canvas = document.querySelector('#draw');
     var ctx = canvas.getContext('2d');
 
@@ -46,32 +117,14 @@
     canvas.width = parseInt(sketch_style.getPropertyValue('width'));
     canvas.height = parseInt(sketch_style.getPropertyValue('height'));
 
-    var mouse = {
+    var position = {
         x: 0,
         y: 0
     };
-    var last_mouse = {
+    var last_position = {
         x: 0,
         y: 0
     };
-
-
-    /* Mouse Capturing Work */
-    canvas.addEventListener('mousemove', function (e) {
-        last_mouse.x = mouse.x;
-        last_mouse.y = mouse.y;
-
-        mouse.x = e.pageX - this.offsetLeft;
-        mouse.y = e.pageY - this.offsetTop;
-        circles.push([last_mouse.x, last_mouse.y, mouse.x, mouse.y]);
-        if (down) {
-            if (circles.length > 30) {
-                var er = circles.shift();
-                erase(er[0], er[1], er[2], er[3]);
-            }
-        }
-    }, false);
-
 
     /* Drawing on Paint App */
     ctx.lineWidth = 5;
@@ -79,34 +132,16 @@
     ctx.lineCap = 'round';
     ctx.strokeStyle = 'blue';
 
-    canvas.addEventListener('mousedown', function (e) {
-        canvas.addEventListener('mousemove', onPaint, false);
-    }, false);
-
-    canvas.addEventListener('mouseup', function () {
-        canvas.removeEventListener('mousemove', onPaint, false);
-    }, false);
-
-    var onPaint = function () {
-        ctx.beginPath();
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = 'blue';
-        ctx.moveTo(last_mouse.x, last_mouse.y);
-        ctx.lineTo(mouse.x, mouse.y);
-        ctx.closePath();
-        ctx.stroke();
-    };
-
-
+    /*draw the lines of the motion detected*/
     function paint(x, y) {
-        last_mouse.x = mouse.x;
-        last_mouse.y = mouse.y;
+        last_position.x = position.x;
+        last_position.y = position.y;
 
-        mouse.x = x;
-        mouse.y = y
-        circles.push([last_mouse.x, last_mouse.y, mouse.x, mouse.y]);
+        position.x = x;
+        position.y = y
+        circles.push([last_position.x, last_position.y, position.x, position.y]);
         //if (down) {
-        if (circles.length > 30) {
+        if (circles.length > 20) {
             var er = circles.shift();
             erase(er[0], er[1], er[2], er[3]);
         }
@@ -114,12 +149,13 @@
         ctx.beginPath();
         ctx.lineWidth = 5;
         ctx.strokeStyle = 'blue';
-        ctx.moveTo(last_mouse.x, last_mouse.y);
-        ctx.lineTo(mouse.x, mouse.y);
+        ctx.moveTo(last_position.x, last_position.y);
+        ctx.lineTo(position.x, position.y);
         ctx.closePath();
         ctx.stroke();
     }
 
+    /*draw white lines to go over the other blue lines that were drawn before*/
     function erase(_x, _y, x, y) {
         ctx.beginPath();
         ctx.lineWidth = 10;
@@ -129,6 +165,42 @@
         ctx.closePath();
         ctx.stroke();
     }
+
+    /* Mouse Capturing Work */
+    /*canvas.addEventListener('mousemove', function (e) {
+        last_mouse.x = mouse.x;
+        last_mouse.y = mouse.y;
+
+        mouse.x = e.pageX - this.offsetLeft;
+        mouse.y = e.pageY - this.offsetTop;
+        circles.push([last_mouse.x, last_mouse.y, mouse.x, mouse.y]);
+        if (down) {
+            if (circles.length > 20) {
+                var er = circles.shift();
+                erase(er[0], er[1], er[2], er[3]);
+            }
+        }
+    }, false);
+    */
+
+    /*mouse events testing of draw functions*/
+    //canvas.addEventListener('mousedown', function (e) {
+    //    canvas.addEventListener('mousemove', onPaint, false);
+    //}, false);
+
+    //canvas.addEventListener('mouseup', function () {
+    //    canvas.removeEventListener('mousemove', onPaint, false);
+    //}, false);
+
+    //var onPaint = function () {
+    //    ctx.beginPath();
+    //   ctx.lineWidth = 5;
+    //    ctx.strokeStyle = 'blue';
+    //    ctx.moveTo(last_mouse.x, last_mouse.y);
+    //    ctx.lineTo(mouse.x, mouse.y);
+    //    ctx.closePath();
+    //    ctx.stroke();
+    // };
 </script>
 
 </html>

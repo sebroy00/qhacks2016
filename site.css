@@ -1,8 +1,30 @@
 html, body {
-	width: 100%;
-	height: 100%;
+	width: auto;
+	height: auto;
 }
 #sketch {
     border:none;
-	height: 100%;
+    z-index: -10;
+}
+
+.block {
+    width: 400px;
+    display: table-cell;
+    height: 400px;
+    background-color: transparent;
+    z-index: 1;
+    border: 3px solid blue;
+}
+
+.block-container {
+    display: table;
+    height: 100px;
+    margin:0 auto;
+    margin-top: -410px;
+    z-index: 10;
+    position: relative;
+}
+
+.block-container:nth-child(3){
+    margin-top: -700px;
 }
