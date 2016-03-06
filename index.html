@@ -25,6 +25,10 @@
 <div class="block-container">
     <div class="block" id="top"></div>
 </div>
+<audio controls id="drum">
+    <source src="mp3/120.BPM.Drum.Beat.Bass.Guitar.Backing.Drum.Track.Free.MP3.Loops.mp3" type="audio/mpeg">
+    Your browser does not support the audio tag.
+</audio>
 <p class="bpm"></p>
 <script>
     var circles = [];
@@ -60,7 +64,7 @@
         if (y > middleTop) {
             if (x < insideLeft) {
                 hit = false
-                    //console.log(y, "left");
+                //console.log(y, "left");
                 $(".block").css("border", "none");
                 $("#left").css("border", "3px solid red");
             } else if (x < insideCenter) {
@@ -119,6 +123,8 @@
             } else {
                 bpm4 = bpm4 / 4;
                 $(".bpm").append(((Math.round(bpm4 * 100)) / 100) + "<br>")
+                var audio = document.getElementById("drum");
+                audio.playbackRate = bpm4/120 ;
                 bpm4 = 0;
                 count4 = 0;
             }
@@ -212,7 +218,7 @@
     function erase(_x, _y, x, y) {
         ctx.beginPath();
         ctx.lineWidth = 10;
-        ctx.strokeStyle = 'white';
+        ctx.strokeStyle = 'red';
         ctx.moveTo(_x, _y);
         ctx.lineTo(x, y);
         ctx.closePath();
