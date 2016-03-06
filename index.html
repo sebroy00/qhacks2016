@@ -4,9 +4,9 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="leap-0.6.4.js"></script>
-    <script src="leap-screenPosition-plugin.js"></script>
-    <link rel="stylesheet" href="site.css" type="text/css" />
+    <script src="js/leap-0.6.4.js"></script>
+    <script src="js/leap-screenPosition-plugin.js"></script>
+    <link rel="stylesheet" href="css/site.css" type="text/css" />
 </head>
 
 <body onload="">
@@ -25,6 +25,7 @@
 <div class="block-container">
     <div class="block" id="top"></div>
 </div>
+<p class="bpm"></p>
 <script>
     var circles = [];
     var down = false;
@@ -39,7 +40,7 @@
         hand: function (hand) {
             //console.log(hand.screenPosition());
             //if (down) {
-                paint(hand.screenPosition()[0], (hand.screenPosition()[1] + 500));
+            paint(hand.screenPosition()[0], (hand.screenPosition()[1] + 500));
             //}
             areaBorder(hand.screenPosition()[0], (hand.screenPosition()[1] + 500));
         }
@@ -67,6 +68,7 @@
                 if (y > middleTopHIT && x < insideCenterHIT && x > insideLeftHIT && !hit) {
                     console.log(y, "hit");
                     hitCount++;
+                    bpmCounter();
                     hit = true;
                 }
                 $(".block").css("border", "none");
@@ -89,7 +91,58 @@
     var hitCount = 0;
     var hit = false;
 
-    /* /*Test function for middle hit */
+    secs2 = 0;
+    count = 0;
+    allBpm = 0;
+    avgBpm = 0;
+    bpm = 0;
+    bpm4 = 0;
+    count4 = 0;
+
+    function bpmCounter() {
+        timeSeconds = new Date;
+        secs = timeSeconds.getTime();
+        if (count == 0) {
+            secs2 = secs;
+            count++;
+        } else {
+            oldBpm = bpm;
+            bpm = (1 / ((secs - secs2) / 1000)) * 60;
+            //bpmChg = (Math.round((bpm - oldBpm) * 10)) / 10;
+            count++;
+            //allBpm = allBpm + bpm;
+            //oldAvg = avgBpm;
+            //avgBpm = allBpm / (count - 1);
+            //avgChg = (Math.round((avgBpm - oldAvg) * 10)) / 10;
+            if (count4++ < 4) {
+                bpm4 += bpm;
+            } else {
+                bpm4 = bpm4 / 4;
+                $(".bpm").append(((Math.round(bpm4 * 100)) / 100) + "<br>")
+                bpm4 = 0;
+                count4 = 0;
+            }
+            secs2 = secs;
+            /*if (bpmChg >= 0) {
+                PbpmChg = "+" + bpmChg
+            } else {
+                PbpmChg = bpmChg
+            }
+            if (avgChg >= 0) {
+                PavgChg = "+" + avgChg
+            } else {
+                PavgChg = avgChg
+            }*/
+            /*avg value*/ //$(".bpm").append(((Math.round(avgBpm * 100)) / 100) + "<br>");
+            /*acg value*/ //PavgChg;
+            /*NOW value*/
+            //$(".bpm").append(((Math.round(bpm * 100)) / 100) + "<br>");
+            /*ncg value*/ // PbpmChg;
+            /*hit value*/ //count;
+        }
+    }
+
+    /* /*Test function for middle hit
     function middleHit(x, y) {
         var middleTop = 300;
         var insideLeft = 555;
