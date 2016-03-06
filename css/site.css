@@ -1,9 +1,11 @@
-html, body {
-	width: auto;
-	height: auto;
+html,
+body {
+    width: auto;
+    height: auto;
 }
+
 #sketch {
-    border:none;
+    border: none;
     z-index: -10;
 }
 
@@ -13,18 +15,40 @@ html, body {
     height: 400px;
     background-color: transparent;
     z-index: 1;
-    border: 3px solid blue;
 }
 
 .block-container {
     display: table;
     height: 100px;
-    margin:0 auto;
+    margin: 0 auto;
     margin-top: -410px;
     z-index: 10;
     position: relative;
 }
 
-.block-container:nth-child(3){
+.block-container:nth-child(3) {
     margin-top: -700px;
+}
+
+p {
+    padding-left: 10px;
+    color: #333;
+    font-size: 20px;
+    width: 150px;
+    border: 2px solid #333;
+}
+
+.bpm {
+    margin-top: 180px;
+}
+
+.fff {
+    margin-top: -650px;
+    margin-right: 50px;
+    margin-bottom: 600px;
+    text-align: right;
+    font-size: 200px;
+    color: red;
+    transform: rotate(18deg);
+    visibility: hidden;
 }

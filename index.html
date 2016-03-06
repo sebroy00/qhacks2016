@@ -25,11 +25,13 @@
 <div class="block-container">
     <div class="block" id="top"></div>
 </div>
+<h1 class="fff"><i>fff</i></h1>
+<p class="bpm">Bpm: 120</p>
+<p>Song: drums</p>
 <audio controls id="drum">
     <source src="mp3/120.BPM.Drum.Beat.Bass.Guitar.Backing.Drum.Track.Free.MP3.Loops.mp3" type="audio/mpeg">
     Your browser does not support the audio tag.
 </audio>
-<p class="bpm"></p>
 <script>
     var circles = [];
     var down = false;
@@ -38,13 +40,22 @@
     }).mouseup(function () {
         down = false;
     });
-
+    var previousZ = 0;
+    var zCount = 50;
     Leap.loop({
 
         hand: function (hand) {
             //console.log(hand.screenPosition());
             //if (down) {
             paint(hand.screenPosition()[0], (hand.screenPosition()[1] + 500));
+            //}
+            //if (hand.screenPosition()[2] - previousZ > 500){
+            //    $(".fff").css("visibility", "visible");
+           // }
+            //else if (zCount-- == 0){
+            //    zCount = 50;
+            //    previousZ = hand.screenPosition()[2];
+             //   $(".fff").css("visibility", "hidden");
             //}
             areaBorder(hand.screenPosition()[0], (hand.screenPosition()[1] + 500));
         }
@@ -122,7 +133,7 @@
                 bpm4 += bpm;
             } else {
                 bpm4 = bpm4 / 4;
-                $(".bpm").append(((Math.round(bpm4 * 100)) / 100) + "<br>")
+                $(".bpm").text("Bpm: " + ((Math.round(bpm4 * 100)) / 100))
                 var audio = document.getElementById("drum");
                 audio.playbackRate = bpm4/120 ;
                 bpm4 = 0;
@@ -218,7 +229,7 @@
     function erase(_x, _y, x, y) {
         ctx.beginPath();
         ctx.lineWidth = 10;
-        ctx.strokeStyle = 'red';
+        ctx.strokeStyle = 'white';
         ctx.moveTo(_x, _y);
         ctx.lineTo(x, y);
         ctx.closePath();
